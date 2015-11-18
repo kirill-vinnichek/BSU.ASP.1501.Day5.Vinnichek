@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Task1.Book;
+using Task1.Book.Repositories;
 namespace UI
 {
     class Program
@@ -11,7 +12,13 @@ namespace UI
         static void Main(string[] args)
         {
             var path = "Books.txt";
-            IRepository<Book> rep = new BookRepository(path);
+            var serialize_path = "Books_serialize.txt";
+            var xml_path = "Books_xml.xml";
+            var l2xml_path = "Books_l2xml.xml";
+           // IRepository<Book> rep = new BookRepository(path);
+           // IRepository<Book> rep = new SerializeRepository(serialize_path);
+            //IRepository<Book> rep = new XMLRepository(xml_path);
+            IRepository<Book> rep = new Linq2XmlRepository(l2xml_path);
             var bookService = new BookListService(rep);
             Book[] books =  { new Book("Albahari",@"C# in Nutshell",1,"ru"),                         
                              new Book("Esposito",@"ASP .NET MVC 4",1,"ru"),

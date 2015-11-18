@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Task1.Book
 {
+    [Serializable]
     public class Book : IEquatable<Book>, IComparable<Book>
     {
 
@@ -16,6 +17,7 @@ namespace Task1.Book
         public int Series { get; set; }
 
         public string Language { get; set; }
+
 
         public Book(string author,string title,int series,string lang)
         {

@@ -12,11 +12,20 @@ namespace Task1.Book
 
         private IRepository<Book> Repository { get; set; }
         private readonly Logger logger;
-
+        private List<Book> list;
         public BookListService(IRepository<Book> repository)
         {
             this.Repository = repository;
             logger = LogManager.GetCurrentClassLogger();
+            try
+            {
+                list = repository.GetAll().ToList();
+            }
+           finally
+            {
+                list = new List<Book>();
+            }
+
         }
 
         public void AddBook(Book book)
@@ -24,9 +33,12 @@ namespace Task1.Book
             logger.Trace("Starting AddBook method");
             if (book == null)
                 throw new ArgumentNullException();
-            var foundBook = Repository.Get(b => book.Equals(b));
+            var foundBook = list.FirstOrDefault(b => book.Equals(b));
             if (foundBook == null)
-                Repository.Add(book);
+            {
+                list.Add(book);
+                Repository.Save(list);
+            }
             else
             {
                 var e = new Exception("This book exists in repository");
@@ -45,7 +57,7 @@ namespace Task1.Book
                 logger.Error(e, "Exception in RemoveBook method");
                 throw e;
             }
-            if (!Repository.Delete(book))
+            if (!list.Remove(book))
             {
                 var e = new Exception("This book does not exist");
                 logger.Error(e, "Exception in RemoveBook method");
@@ -57,8 +69,8 @@ namespace Task1.Book
         public Book FindByTag(Func<Book, bool> where)
         {
             logger.Trace("Starting FindByTag method");
-            return Repository.Get(where);
-          
+            return list.FirstOrDefault(where);
+
         }
 
         public IEnumerable<Book> SortBooksByTag(Func<Book, object> where)
